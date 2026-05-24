@@ -1,4 +1,4 @@
-# GCP Bootstrap
+# Google Cloud Platform (GCP) Bootstrap
 
 One-time setup to provision the infrastructure that `fractal-cut`'s CI/CD pipeline depends on.
 
