@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; echo \"$f\" | grep -q '\\.tf$' && tofu fmt \"$f\"; } 2>/dev/null || true",
+            "timeout": 15,
+            "statusMessage": "Formatting HCL..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case $f in *.tf) tflint --chdir=${f%/*};; esac; } 2>/dev/null || true",
+            "timeout": 30,
+            "statusMessage": "Linting HCL..."
+          }
+        ]
+      }
+    ]
+  }
+}
