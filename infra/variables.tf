@@ -10,7 +10,12 @@ variable "region" {
 }
 
 variable "github_repo" {
-  description = "GitHub repo in owner/name format (e.g. ketangit/fractal-cut)"
+  description = "GitHub repo in owner/name format for the app deploy workflow (e.g. ketangit/fractal-cut)"
+  type        = string
+}
+
+variable "infra_github_repo" {
+  description = "GitHub repo in owner/name format for the infra tofu workflow (e.g. ketangit/tf-gcp-config)"
   type        = string
 }
 

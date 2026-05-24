@@ -17,8 +17,8 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "attribute.repository" = "assertion.repository"
   }
 
-  # Restrict to a specific repo so any GitHub Actions token cannot impersonate the SA
-  attribute_condition = "assertion.repository == '${var.github_repo}'"
+  # Allow tokens from either the app deploy repo or the infra tofu repo
+  attribute_condition = "assertion.repository in ['${var.github_repo}', '${var.infra_github_repo}']"
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
@@ -29,4 +29,10 @@ resource "google_service_account_iam_member" "wif_binding" {
   service_account_id = google_service_account.deployer.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
+}
+
+resource "google_service_account_iam_member" "wif_binding_infra" {
+  service_account_id = google_service_account.deployer.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.infra_github_repo}"
 }
